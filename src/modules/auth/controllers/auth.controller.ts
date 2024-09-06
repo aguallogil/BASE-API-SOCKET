@@ -25,8 +25,7 @@ export class AuthController {
 
             // Devuelve el accessToken y el userId
             return {
-                accessToken,
-                userId: user._id
+                accessToken
             };
         }
 

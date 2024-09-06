@@ -32,6 +32,8 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
       if (existingSession) {
         console.log(`User ${userId} already has an active WebSocket session. Disconnecting previous session.`);
         this.server.sockets.sockets.get(existingSession.socketId)?.disconnect(); // Desconecta la sesión WebSocket anterior
+        // Eliminar la sesión anterior
+        await this.sessionsService.deleteSession(userId, 'websocket');
       }
 
       // Crear y registrar la nueva sesión WebSocket
@@ -53,8 +55,9 @@ export class SessionGateway implements OnGatewayConnection, OnGatewayDisconnect 
       const decodedToken = await this.authService.validateToken(token);
       if (decodedToken) {
         const userId = decodedToken.userId;
-        console.log(`Ending WebSocket session for userId: ${userId}`);
-        await this.sessionsService.endSession(userId, 'websocket');
+        console.log(`Deleting WebSocket session for userId: ${userId}`);
+        // Eliminar la sesión de la base de datos
+        await this.sessionsService.deleteSession(userId, 'websocket');
       }
     }
   }
